@@ -3,14 +3,14 @@ import Link from "next/link";
 export default function Home() {
   return (
     <>
-     <div className="bg-gray-600   text-white h-screen">
+     <div className="bg-green-500 md:bg-gray-600   text-white h-screen">
 
 
 
 <div className="flex justify-center">
 
 
-  <div className=" flex rounded-2xl m-6 bg-gray-950 shadow-2xl shadow-green-950 items-center w-[90vw] md:w-[65vw] justify-center  p-4">
+  <div className=" flex rounded-2xl m-6 bg-green-950 md:bg-gray-950 shadow-2xl shadow-green-950 items-center w-[90vw] md:w-[65vw] justify-center  p-4">
 
     <div className="form p-6 rounded-xl">
 

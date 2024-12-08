@@ -4,7 +4,8 @@ import Sidebar from '../Components/Sidebar'
 const page = () => {
   return (
     <div>
-      <Sidebar/>
+<Sidebar/>
+
     </div>
   )
 }
