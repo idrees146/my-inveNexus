@@ -37,7 +37,7 @@ const Sidebar = () => {
                     <img src="/cross.svg" onClick={close} className='sm:hidden absolute right-4 top-4' width={27} alt="" />
 
                     <div className="logo ml-4 flex items-center md:my-7 my-14 gap-4">
-                        <img width={50} src="/logo.png" alt="" />
+                        <img width={50} src="/icon.png" alt="" />
                         <h1 className='text-2xl font-bold'>InveNexus</h1>
 
                     </div>
