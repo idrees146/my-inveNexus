@@ -55,7 +55,7 @@ export default function Home() {
 
     </div>
 
-    <div className=" cover hidden md:block rounded-lg"><img className="rounded-xl  mt-2" width={450} src="system.JPG" alt="" />
+    <div className=" cover hidden md:block rounded-lg"><img className="rounded-xl  mt-2" width={450} src="system.jpg" alt="" />
 
       <p className="text-center font-bold text-2xl pt-2 ">InveNexus</p>
       <p className="text-center  ">Your Companion in Inventory Management</p></div>
