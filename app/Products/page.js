@@ -40,7 +40,7 @@ const page = () => {
                             <td class="p-4 w-4">
                                  
                             </td>
-                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple Imac 27"</td>
+                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple Imac 27</td>
                             <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">Desktop PC</td>
                             <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">$1999</td>
                             <td class="py-4 md:px-6 px-3 text-sm font-medium text-right whitespace-nowrap">
@@ -51,7 +51,7 @@ const page = () => {
                             <td class="p-4 w-4">
                                 
                             </td>
-                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple MacBook Pro 17"</td>
+                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple MacBook Pro 17</td>
                             <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">Laptop</td>
                             <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">$2999</td>
                             <td class="py-4 md:px-6 px-3 text-sm font-medium text-right whitespace-nowrap">
