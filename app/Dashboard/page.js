@@ -9,7 +9,7 @@ const page = () => {
 
             <Sidebar />
 
-            <div className='w-full absolute text-gray-950  md:w-[79vw] md:h-[90vh]  top-12 left-0  md:left-[20vw]'>
+            <div className='w-full absolute  text-gray-950  md:w-[79vw] md:h-[90vh]  top-12 left-0  md:left-[20vw]'>
 
 
 
