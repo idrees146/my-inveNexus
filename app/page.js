@@ -1,9 +1,25 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
+import { useSession, signIn, signOut } from "next-auth/react"
+import { useRouter } from "next/navigation";
+
+
+
+
 export default function Home() {
+
+  const { data: session } = useSession()
+  const router = useRouter();
+
+   if(session) {
+  router.push("/Dashboard")
+   }
+
   return (
     <>
      <div className="bg-green-500 md:bg-gray-600   text-white h-screen">
+
 
 
 
@@ -24,7 +40,7 @@ export default function Home() {
       <div className="flex items-center  my-4 justify-center dark:bg-gray-800">
 
 
-        <button  class="px-4 rounded-xl bg-white justify-center hover:scale-105 trasition-all  py-2 border flex gap-2 border-slate-200 dark:border-slate-700  text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition w-full duration-150">
+        <button onClick={()=>{signIn('google')}}  class="px-4 rounded-xl bg-white justify-center hover:scale-105 trasition-all  py-2 border flex gap-2 border-slate-200 dark:border-slate-700  text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition w-full duration-150">
 
           <img loading="lazy" alt="google logo" className="w-6 h-6" src="/google.svg" />
 

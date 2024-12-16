@@ -1,9 +1,86 @@
+"use client"
 import React from 'react'
 import Link from 'next/link'
 import Sidebar from '../Components/Sidebar'
 import { BarChart, Component } from '../Components/Barchart'
+import { useState, useEffect } from 'react'
 
-const page = () => {
+
+
+
+
+const Page = () => {
+
+    const [product, setProduct] = useState([])
+    const [price, setPrice] = useState("")
+    const [category, setCategory] = useState("")
+    const [loading, setLoading] = useState(true);
+
+
+    const [order, setOrder] = useState([])
+    const [cost, setCost] = useState("")
+
+
+    //useEffect for fetching the orders on the dashboard
+
+    useEffect(() => {
+     
+
+        async function fetchOrders(){
+            try{
+
+                const response = await fetch("/api/getOrders");
+                const data = await response.json();
+
+                if(data.success){
+                    setOrder(data.data);
+                }
+            }catch(error){
+
+                console.log("Error fetching the orders data: " +error);
+
+            }finally{
+                setLoading(false)
+            }
+        }
+
+        fetchOrders();
+
+    }, [])
+    
+
+    useEffect(() => {
+
+        async function fetchProducts() {
+
+            try {
+
+                const response = await fetch('/api/getProducts');
+                const data = await response.json();
+
+                if (data.success) {
+                    setProduct(data.data);
+                }
+
+            }
+            catch (error) {
+                console.log("Error fetching the data: " + error)
+
+            }
+            finally {
+                setLoading(false)
+
+            }
+
+        }
+        fetchProducts();
+
+    }, [])
+
+
+
+
+
     return (
         <>
 
@@ -22,10 +99,26 @@ const page = () => {
                     <div className="box hover:shadow-2xl cursor-pointer border-2 bg-green-900 md:bg-gray-950 rounded-xl h-[200px] w-[80vw] md:h-[80%] md:w-[45%] ">
                         <div className='flex gap-4 p-2'>
                             <img src="/salee.svg" alt="" />
-                            <p> Total Sales</p>
+                            <p> Total Items</p>
 
                         </div>
-                        <h2 className='text-2xl font-bold text-center relative my-8'>PKR 120098</h2>
+
+
+                        {loading &&
+                                <div className='flex justify-center w-[100%] '>
+
+                                    <img className='' width={70} src="/newanim.gif" alt="" />
+
+
+                                </div>}
+
+
+                        <h2 className='text-2xl font-bold text-center relative my-8'>
+                            {product.reduce((total, product) => total + Number(product.quantity), 0)}
+                        </h2>
+
+
+
 
                         <hr className='w-3/4  mx-auto' />
 
@@ -39,10 +132,20 @@ const page = () => {
 
                         <div className='flex gap-4 p-2'>
                             <img src="/orde.svg" alt="" />
-                            <p> Total Order</p>
+                            <p> Total Sales Amount</p>
                         </div>
 
-                        <h2 className='text-2xl font-bold text-center relative my-8'>PKR 120098</h2>
+                        {loading &&
+                                <div className='flex justify-center w-[100%] '>
+
+                                    <img className='' width={70} src="/newanim.gif" alt="" />
+
+
+                                </div>}
+
+                        <h2 className='text-2xl font-bold text-center relative my-8'>PKR {order.reduce((total, order) => total + Number(order.price), 0)}</h2>
+
+                        
                         <hr className='w-3/4 mx-auto' />
 
                         <div className='flex gap-4 cursor-pointer hover:underline items-center'>
@@ -50,7 +153,7 @@ const page = () => {
                             <img src="/go.svg" alt="" />
                         </div>
                     </div>
-            
+
                 </div>
 
                 <div className="main  md:h-[40vh] gap-4 md:ml-4 flex flex-col md:flex-row items-center justify-center md:justify-between">
@@ -78,61 +181,38 @@ const page = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="odd:bg-white  even:bg-gray-50  border-b ">
-                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            Apple MacBook Pro 17&quot;
-                                        </th>
 
-                                        <td class="px-6 py-4">
-                                            Laptop
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            $2999
-                                        </td>
 
-                                    </tr>
-                                    <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            Microsoft Surface Pro
-                                        </th>
+                                    {product.map((product) => (
 
-                                        <td class="px-6 py-4">
-                                            Laptop PC
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            $1999
-                                        </td>
+                                        <tr key={product._id} class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                {product.product}
+                                            </th>
 
-                                    </tr>
-                                    <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            Magic Mouse 2
-                                        </th>
+                                            <td class="px-6 py-4">
+                                                {product.category}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                               RS {product.price}
+                                            </td>
 
-                                        <td class="px-6 py-4">
-                                            Accessories
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            $99
-                                        </td>
 
-                                    </tr>
-                                    <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            Google Pixel Phone
-                                        </th>
+                                        </tr>
+                                    ))}
 
-                                        <td class="px-6 py-4">
-                                            Phone
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            $799
-                                        </td>
-
-                                    </tr>
 
                                 </tbody>
                             </table>
+
+                            {loading &&
+                                <div className='flex justify-center w-[100%] my-20'>
+
+                                    <img className='' width={70} src="/newanim.gif" alt="" />
+
+
+                                </div>}
+
                         </div>
 
 
@@ -140,7 +220,7 @@ const page = () => {
 
                     </div>
                     <div className="box2 md:absolute top-24 mb-10 md:mb-0 right-2  h-[200px] w-[80vw] md:w-[48%] rounded-xl">
-                    <Component />
+                        <Component />
                     </div>
                 </div>
 
@@ -159,4 +239,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

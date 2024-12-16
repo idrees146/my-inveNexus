@@ -1,83 +1,122 @@
 "use client"
 import React from 'react'
 import Sidebar from '../Components/Sidebar'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 
-const Page = () => {
 
 
-    const [Show, setShow] = useState("hidden")
-    const [Delete, setDelete] = useState("hidden")
 
-    const toggleDelete = () => {
-        if (Delete == 'hidden') {
-            setDelete('')
+
+
+
+export default function Page() {
+
+    const [show, setshow] = useState("hidden")
+
+    const toggleOrder = () => {
+        if (show == "hidden") {
+            setshow("block")
         } else {
-            setDelete('hidden')
+            setshow("hidden")
+        }
+    }
+
+    const close = () => {
+        if (show == "block") {
+            setshow("hidden")
         }
     }
 
 
-    
 
-    const toggleProduct = () => {
+    const [product, setProduct] = useState("")
+    const [price, setPrice] = useState("")
+    const [date, setDate] = useState(null)
 
-        if (Show == 'hidden') {
-            setShow('')
-        } else {
-            setShow('hidden')
+
+    const [orders, setOrders] = useState([])
+    const [loading, setLoading] = useState(true)
+
+
+    useEffect(() => {
+
+
+        async function fetchOrders() {
+            try {
+
+                const response = await fetch("/api/getOrders");
+                const data = await response.json();
+
+                if (data.success) {
+                    setOrders(data.data);
+                } else {
+                    console.log("error while fetching the data")
+                }
+
+            } catch (error) {
+                console.log("could not fetch the data")
+            }
+            finally {
+                setLoading(false)
+            }
         }
-    }
 
-
-    const closeProduct = () => {
-        setShow("hidden")
-        setDelete("hidden")
-    }
+        fetchOrders();
+    }, [])
 
 
 
-    //Logic for Creation of new Product in the Database
 
-    const createProduct = () => {
-
-        toast('Your Product is added to the Database!', {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-
-        });
-
-        //Remaining logic will be added later
-    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
 
-    //Delete product from the Database
-    const deleteProduct = () => {
-      
-        toast('Product Deleted Successfully from Database!', {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
+        try {
+            const res = await fetch("/api/addOrder", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ product, price, date }),
+            });
+
+            const data = await res.json();
+            if (data.success) {
+
+                setProduct("");
+                setPrice("");
+                setQuantity(null);
+                // Fetch updated products
 
 
-    })
-    
-    }
+                fetchProducts();
+
+            } else {
+                setMessage(data.error || "Something went wrong");
+            }
+        } catch (err) {
+            console.log("Error occured")
+        }
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return (
         <>
             <Sidebar />
@@ -97,9 +136,9 @@ const Page = () => {
 
             />
 
-            <div className=" w-full absolute     md:w-[79vw] md:h-[90vh]  top-12 left-0  md:left-[20vw] ">
-
-                <button onClick={toggleProduct} className='text-white bg-green-950 md:bg-gray-950 p-1 px-2 rounded mt-7 ml-3 hover:bg-green-900 md:hover:bg-gray-900' >New Customer
+            <div className="   absolute     md:w-[79vw] md:h-[90vh]  top-12  left-[10vw]   md:left-[20vw] ">
+                {/* onClick={toggleProduct} */}
+                <button onClick={toggleOrder} className='text-white bg-green-950 md:bg-gray-950 p-1 px-2 rounded mt-7 float-right mr-3 hover:bg-green-900 md:hover:bg-gray-900' >New Orders
 
                 </button>
 
@@ -109,203 +148,126 @@ const Page = () => {
 
 
 
-                <div id="crud-modal" tabindex="-1" aria-hidden="true" class={` ${Show} transition-all duration-300 overflow-y-auto overflow-x-hidden  backdrop-blur-[2px]  fixed    z-20  items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full`}>
-                    <div class=" relative p-4 mx-auto w-full max-w-md max-h-full">
-
-                        <div class="relative bg-white   transition-transform transform duration-300 rounded-lg   shadow dark:bg-gray-700">
-
-                            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                    Create New Product
-                                </h3>
-                                <button onClick={toggleProduct}  type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="crud-modal">
-                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                    </svg>
-                                    <span class="sr-only">Close modal</span>
-                                </button>
-                            </div>
-
-                            <div class="p-4 md:p-5">
-                                <div class="grid gap-4 mb-4 grid-cols-2">
-                                    <div class="col-span-2">
-                                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
-                                        <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type product name" required="" />
-                                    </div>
-                                    <div class="col-span-2 sm:col-span-1">
-                                        <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
-                                        <input type="number" name="price" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required="" />
-                                    </div>
-                                    <div class="col-span-2 sm:col-span-1">
-                                        <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
-                                        <select id="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                            <option selected="">Select category</option>
-                                            <option value="TV">TV/Monitors</option>
-                                            <option value="PC">PC</option>
-                                            <option value="GA">Gaming/Console</option>
-                                            <option value="PH">Phones</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-span-2">
-                                        <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Description</label>
-                                        <textarea id="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write product description here"></textarea>
-                                    </div>
-                                </div>
-                                <button onClick={() => {
-                                    createProduct();
-                                    toggleProduct();
-                                }} class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                    <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
-                                    Add Product
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-
-{/* Confirming the Delete Product */}
-
-<div class={`${Delete} fixed z-10  inset-0 overflow-y-auto`}>
-    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity">
-            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-        </div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
-        <div
-            class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-            <div class="sm:flex sm:items-start">
                 <div
-                    class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
-                    <svg class="h-6 w-6 text-green-600" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                </div>
-                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">
-                        Delete Product
-                    </h3>
-                    <div class="mt-2">
-                        <p class="text-sm leading-5 text-gray-500">
-                           Are you sure you want to delete this product from the Database?
-                        </p>
+                    class={` ${show} fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]`}>
+                    <div class="w-full max-w-lg bg-white shadow-lg rounded-lg p-8 relative">
+                        <div class="flex items-center">
+                            <h3 class="text-blue-600 text-xl font-bold flex-1">New transaction</h3>
+                            <svg onClick={close} xmlns="http://www.w3.org/2000/svg" class="w-3 ml-2 cursor-pointer shrink-0 fill-gray-400 hover:fill-red-500"
+                                viewBox="0 0 320.591 320.591">
+                                <path
+                                    d="M30.391 318.583a30.37 30.37 0 0 1-21.56-7.288c-11.774-11.844-11.774-30.973 0-42.817L266.643 10.665c12.246-11.459 31.462-10.822 42.921 1.424 10.362 11.074 10.966 28.095 1.414 39.875L51.647 311.295a30.366 30.366 0 0 1-21.256 7.288z"
+                                    data-original="#000000"></path>
+                                <path
+                                    d="M287.9 318.583a30.37 30.37 0 0 1-21.257-8.806L8.83 51.963C-2.078 39.225-.595 20.055 12.143 9.146c11.369-9.736 28.136-9.736 39.504 0l259.331 257.813c12.243 11.462 12.876 30.679 1.414 42.922-.456.487-.927.958-1.414 1.414a30.368 30.368 0 0 1-23.078 7.288z"
+                                    data-original="#000000"></path>
+                            </svg>
+                        </div>
+
+                        <form onSubmit={handleSubmit} class="space-y-4 mt-8">
+                            <div>
+                                <labe class="text-gray-800 text-sm mb-2 block">Name of the product</labe>
+                                <input value={product} onChange={(e) => setProduct(e.target.value)} type="text" placeholder="Enter product name"
+                                    class="px-4 py-3 bg-gray-100 w-full text-gray-800 text-sm border-none focus:outline-blue-600 focus:bg-transparent rounded-lg" />
+                            </div>
+                            <div>
+                                <labe class="text-gray-800 text-sm mb-2 block">Selling price</labe>
+                                <input value={price} onChange={(e) => setPrice(e.target.value)} type="number" placeholder="Enter price"
+                                    class="px-4 py-3 bg-gray-100 w-full text-gray-800 text-sm border-none focus:outline-blue-600 focus:bg-transparent rounded-lg" />
+                            </div>
+
+                            <div>
+                                <labe class="text-gray-800 text-sm mb-2 block">Purchase Date</labe>
+                                <input value={date} onChange={(e) => setDate(e.target.value)} type="date" placeholder="Choose Date"
+                                    class="px-4 py-3 bg-gray-100 w-full text-gray-800 text-sm border-none focus:outline-blue-600 focus:bg-transparent rounded-lg" />
+                            </div>
+
+
+
+                            <div class="flex justify-end gap-4 !mt-8">
+                                <button onClick={close} type="button"
+                                    class="px-6 py-3 rounded-lg text-gray-800 text-sm border-none outline-none tracking-wide bg-gray-200 hover:bg-gray-300">Cancel</button>
+                                <button type="submit"
+                                    class="px-6 py-3 rounded-lg text-white text-sm border-none outline-none tracking-wide bg-blue-600 hover:bg-blue-700">Submit</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </div>
-            <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                    <button onClick={()=>{
-                        closeProduct();
-                        deleteProduct();
-
-                    } } type="button"
-                        class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                       Delete
-                    </button>
-                </span>
-                <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-                    <button  onClick={
-                        closeProduct} type="button"
-                        class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                        Cancel
-                    </button>
-                </span>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 
 
-                <div class="flex  flex-col ml-2 mt-3">
-                    <div class="overflow-x-auto shadow-md  sm:rounded-lg">
-                        <div class="inline-block min-w-full  align-middle">
-                            <div class="overflow-hidden ">
-                                <table class="min-w-full divide-y divide-gray-200    ">
-                                    <thead class="bg-green-900 md:bg-gray-900   text-white ">
-                                        <tr>
-                                            <th scope="col" class="p-4">
+                <div class=" ">
 
-                                            </th>
-                                            <th scope="col" class="py-3 md:px-6 px-3 text-xs font-medium tracking-wider text-left  uppercase dark:text-gray-400">
-                                                Product Name
-                                            </th>
-                                            <th scope="col" class="py-3 md:px-6 px-3 text-xs font-medium tracking-wider text-left  uppercase dark:text-gray-400">
-                                                Category
-                                            </th>
-                                            <th scope="col" class="py-3 md:px-6 px-3 text-xs font-medium tracking-wider text-left  uppercase dark:text-gray-400">
-                                                Price
-                                            </th>
-                                            <th scope="col" class="p-4">
-                                                <span class="sr-only">Delete</span>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td class="p-4 w-4">
+                    <div class="mx-auto mt-8 max-w-screen-lg px-2">
+                        <div class="sm:flex sm:items-center sm:justify-between flex-col sm:flex-row">
+                            <p class="flex-1 text-base font-bold text-green-900 md:text-gray-900 ">Orders History</p>
 
-                                            </td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple Imac 27</td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">Desktop PC</td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">$1999</td>
-                                            <td onClick={toggleDelete}  class="py-4 md:px-6 px-3 text-sm font-medium text-right whitespace-nowrap">
-                                                <a href="#" class="text-blue-600 dark:text-blue-500 hover:underline">Delete</a>
-                                            </td>
-                                        </tr>
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td class="p-4 w-4">
-
-                                            </td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple MacBook Pro 17</td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">Laptop</td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">$2999</td>
-                                            <td onClick={toggleDelete}  class="py-4 md:px-6 px-3 text-sm font-medium text-right whitespace-nowrap">
-                                                <a href="#" class="text-blue-600 dark:text-blue-500 hover:underline">Delete</a>
-                                            </td>
-                                        </tr>
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td class="p-4 w-4">
-
-                                            </td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">iPhone 13 Pro</td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">Phone</td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">$999</td>
-                                            <td onClick={toggleDelete}  class="py-4 md:px-6 px-3 text-sm font-medium text-right whitespace-nowrap">
-                                                <a href="#" class="text-blue-600 dark:text-blue-500 hover:underline">Delete</a>
-                                            </td>
-                                        </tr>
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td class="p-4 w-4">
-
-                                            </td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple Magic Mouse 2</td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">Accessories</td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">$99</td>
-                                            <td onClick={toggleDelete}  class="py-4 md:px-6 px-3 text-sm font-medium text-right whitespace-nowrap">
-                                                <a href="#" class="text-blue-600 dark:text-blue-500 hover:underline">Delete</a>
-                                            </td>
-                                        </tr>
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td class="p-4 w-4">
-
-                                            </td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple Watch Series 7</td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">Accessories</td>
-                                            <td class="py-4 md:px-6 px-3 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">$599</td>
-                                            <td onClick={toggleDelete} class="py-4 md:px-6 px-3 text-sm font-medium text-right whitespace-nowrap">
-                                                <a href="#" class="text-blue-600 dark:text-blue-500 hover:underline">Delete</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="mt-4 sm:mt-0">
+                                <div class="flex items-center justify-start sm:justify-end">
+                             </div>
                             </div>
                         </div>
+
+                        <div class="mt-6 overflow-hidden flex justify-center w-[80vw] md:w-full rounded-xl border shadow">
+                            <table class="min-w-full border-separate border-spacing-y-2 border-spacing-x-2">
+                                <thead class="hidden border-b lg:table-header-group">
+                                    <tr class="">
+                                        <td width="50%" class="whitespace-normal py-4 text-sm font-medium text-gray-500 sm:px-6">Product</td>
+
+                                        <td class="whitespace-normal py-4 text-sm font-medium text-gray-500 sm:px-6">Date</td>
+
+                                        <td class="whitespace-normal py-4 text-sm font-medium text-gray-500 sm:px-6">Amount</td>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody class="lg:border-gray-300">
+
+
+                                    {orders.map((orders) => (
+                                        <tr key={orders._id} class="">
+
+
+                                            <td width="50%" class="whitespace-no-wrap py-4 text-sm font-bold text-gray-900 sm:px-6">
+                                                {orders.product}
+                                                <div class="mt-1 lg:hidden">
+                                                    <p class="font-normal text-gray-500"> {new Date(orders.date).toISOString().split("T")[0]}</p>
+                                                </div>
+                                            </td>
+
+                                            <td class="whitespace-no-wrap hidden py-4 text-sm font-normal text-gray-500 sm:px-6 lg:table-cell"> {new Date(orders.date).toISOString().split("T")[0]}</td>
+
+                                            <td class="whitespace-no-wrap py-4 px-6 text-right text-sm text-gray-600 lg:text-left">
+                                               RS {orders.price}
+
+                                            </td>
+
+                                        </tr>))}
+
+
+
+
+                                </tbody>
+                            </table>
+
+                         
+                        </div>
+                        {loading &&
+                                <div className='flex justify-center w-[100%] my-20'>
+
+                                    <img className='' width={70} src="/newanim.gif" alt="" />
+
+
+                                </div>}
                     </div>
+
                 </div>
+
+
+
+
+
 
 
 
@@ -315,4 +277,3 @@ const Page = () => {
     )
 }
 
-export default Page
