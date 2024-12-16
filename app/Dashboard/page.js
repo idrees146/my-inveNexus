@@ -15,6 +15,7 @@ const Page = () => {
     const [price, setPrice] = useState("")
     const [category, setCategory] = useState("")
     const [loading, setLoading] = useState(true);
+    const [refreshOrders, setRefreshOrders] = useState(false); 
 
 
     const [order, setOrder] = useState([])
@@ -46,7 +47,12 @@ const Page = () => {
 
         fetchOrders();
 
+    }, [refreshOrders])
+
+    useEffect(() => {
+        setRefreshOrders(prev => !prev);
     }, [])
+    
     
 
     useEffect(() => {
@@ -60,6 +66,7 @@ const Page = () => {
 
                 if (data.success) {
                     setProduct(data.data);
+                   
                 }
 
             }
@@ -74,6 +81,7 @@ const Page = () => {
 
         }
         fetchProducts();
+        
 
     }, [])
 

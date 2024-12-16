@@ -14,17 +14,18 @@ const Page = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [refresh, setRefresh] = useState(false);
 
     const [show, setShow] = useState("hidden");
     const [deleteModal, setDeleteModal] = useState("hidden");
 
-    // Fetch products
-    useEffect(() => {
-        async function fetchProducts() {
+        // Fetch products
+        const fetchProducts = async () => {
+            setLoading(true);  // Show loading spinner during fetch
             try {
                 const res = await fetch("/api/getProducts");
                 const data = await res.json();
-
+    
                 if (data.success) {
                     setProducts(data.data);
                 } else {
@@ -35,41 +36,42 @@ const Page = () => {
             } finally {
                 setLoading(false);
             }
-        }
-
-        fetchProducts();
-    }, []);
-
-
-    if (error) return <p style={{ color: "red" }}>{error}</p>;
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setMessage("");
-
-        try {
-            const res = await fetch("/api/addProduct", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ product, price, category, quantity }),
-            });
-
-            const data = await res.json();
-            if (data.success) {
-                setMessage("Product has been added successfully!");
-                setProduct("");
-                setPrice("");
-                setCategory("");
-                setQuantity(0);
-                // Fetch updated products
-                fetchProducts();
-            } else {
-                setMessage(data.error || "Something went wrong");
+        };
+    
+        useEffect(() => {
+            fetchProducts();  // Fetch products initially
+        }, [refresh]);  // Re-run when `refresh` state changes
+    
+        if (error) return <p style={{ color: "red" }}>{error}</p>;
+    
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            setMessage("");
+    
+            try {
+                const res = await fetch("/api/addProduct", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ product, price, category, quantity }),
+                });
+    
+                const data = await res.json();
+                if (data.success) {
+                    setMessage("Product has been added successfully!");
+                    setProduct("");
+                    setPrice("");
+                    setCategory("");
+                    setQuantity(0);
+    
+                    // Trigger refresh to re-fetch products
+                    setRefresh(prev => !prev);  // Toggle the refresh state to re-fetch
+                } else {
+                    setMessage(data.error || "Something went wrong");
+                }
+            } catch (err) {
+                setMessage("Error adding product data to the database");
             }
-        } catch (err) {
-            setMessage("Error adding product data to the database");
-        }
-    };
+        };
 
     const toggleProduct = () => {
         setShow(show === "hidden" ? "" : "hidden");

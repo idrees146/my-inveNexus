@@ -40,41 +40,41 @@ export default function Page() {
 
     const [orders, setOrders] = useState([])
     const [loading, setLoading] = useState(true)
+    const [refreshOrders, setRefreshOrders] = useState(false);  
 
 
     useEffect(() => {
-
-
         async function fetchOrders() {
+            setLoading(true);
             try {
-
                 const response = await fetch("/api/getOrders");
                 const data = await response.json();
-
                 if (data.success) {
                     setOrders(data.data);
                 } else {
-                    console.log("error while fetching the data")
+                    console.log("Error while fetching orders");
                 }
-
             } catch (error) {
-                console.log("could not fetch the data")
-            }
-            finally {
-                setLoading(false)
+                console.log("Could not fetch the orders");
+            } finally {
+                setLoading(false);
             }
         }
 
         fetchOrders();
-    }, [])
+    }, [refreshOrders]); // Re-fetch when `refreshOrders` state changes
 
-
-
-
+    // Handle Order Submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Validate form input
+        if (!product || !price || !date) {
+            setMessage("Please fill in all fields.");
+            return;
+        }
 
+        setMessage(""); // Clear previous message
         try {
             const res = await fetch("/api/addOrder", {
                 method: "POST",
@@ -84,24 +84,22 @@ export default function Page() {
 
             const data = await res.json();
             if (data.success) {
-
                 setProduct("");
                 setPrice("");
-                setQuantity(null);
-                // Fetch updated products
+                setDate(null);
+                setMessage("Order added successfully!");
 
-
-                fetchProducts();
-
+                // Trigger re-fetch of orders by updating the `refreshOrders` state
+                setRefreshOrders(prev => !prev);
+               // Close the modal after successful order submission
             } else {
                 setMessage(data.error || "Something went wrong");
             }
         } catch (err) {
-            console.log("Error occured")
+            console.log("Error occurred while adding the order");
+            setMessage("Error occurred while adding the order.");
         }
     };
-
-
 
 
 
