@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image";
 import Link from "next/link";
-import { useSession, signIn, signOut } from "next-auth/react"
+// import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation";
 
 
@@ -9,12 +9,12 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
 
-  const { data: session } = useSession()
-  const router = useRouter();
+  // const { data: session } = useSession()
+  // const router = useRouter();
 
-   if(session) {
-  router.push("/Dashboard")
-   }
+  //  if(session) {
+  // router.push("/Dashboard")
+  //  }
 
   return (
     <>
@@ -44,7 +44,7 @@ export default function Home() {
 
           <img loading="lazy" alt="google logo" className="w-6 h-6" src="/google.svg" />
 
-          <span className="text-center ">Login with Google</span>
+         <Link href="/Dashboard"> <span className="text-center ">Login with Google</span></Link>
         </button>
 
 

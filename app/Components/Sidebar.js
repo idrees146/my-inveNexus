@@ -2,12 +2,12 @@
 import React from 'react'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useSession, signOut } from 'next-auth/react'
+// import { useSession, signOut } from 'next-auth/react'
 //import { useRouter } from 'next/navigation'
 
 const Sidebar = () => {
 
-    const { data: session } = useSession();
+    //const { data: session } = useSession();
 
     // const router = useRouter();
 
@@ -80,7 +80,7 @@ const Sidebar = () => {
                         <p>About Developer</p>
                     </div></Link>
                     {/* onClick={signOut}  */}
-                    <div onClick={signOut} className="dashboard flex items-center ml-4 gap-4 px-4 w-52 cursor-pointer md:my-2 my-4 hover:bg-green-800 md:hover:bg-gray-900 rounded p-1">
+                    <div className="dashboard flex items-center ml-4 gap-4 px-4 w-52 cursor-pointer md:my-2 my-4 hover:bg-green-800 md:hover:bg-gray-900 rounded p-1">
                         <img width={30} src="/logout.svg" alt="" />
                         <p>Sign out</p>
                     </div>
@@ -114,7 +114,7 @@ const Sidebar = () => {
                     </ul>
 
 
-                    {session &&
+                    {/* {session &&
                         <div className='flex items-center  justify-center  mr-4 gap-2 my-14 py-2 px-1  cursor-pointer rounded-xl'>
 
                             <div className="profile ">
@@ -126,7 +126,7 @@ const Sidebar = () => {
                                 <p className='text-sm hidden sm:block'>{session.user.email}</p>
                             </div>
 
-                        </div>}
+                        </div>} */}
 
 
                 </div>

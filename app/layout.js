@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 
 
-import SessionWrapper from "./Components/SessionWrapper";
+//import SessionWrapper from "./Components/SessionWrapper";
 
 
 const geistSans = localFont({
@@ -33,16 +33,16 @@ export default function RootLayout({ children }) {
 
    
      
- 
-        <SessionWrapper>
+{/*  
+        <SessionWrapper> */}
        
 
 
         {children}
 
     
-      
-        </SessionWrapper>
+{/*       
+        </SessionWrapper> */}
       </body>
     </html>
     
