@@ -12,16 +12,15 @@ export async function GET() {
     // Fetch all products
     const products = await Product.find({});
 
-    return new Response(JSON.stringify(products), { status: 200 });
 
     // Return the fetched products
-    // return new Response(JSON.stringify({ success: true, data: products }),
+    return new Response(JSON.stringify({ success: true, data: products }),
     
-    // {
-    //   status: 200,
-    // });
+     {
+      status: 200,
+     });
 
-    
+
   } catch (error) {
     console.error("Error fetching products:", error.message);
 

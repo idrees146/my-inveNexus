@@ -29,7 +29,7 @@ const Page = () => {
 
             const res = await fetch("/api/getProducts");
             const data = await res.json();
-            setProducts(data);
+            setProducts(data.data);
             setLoading(false);
 
         };
