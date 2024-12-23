@@ -19,59 +19,57 @@ const Page = () => {
     const [show, setShow] = useState("hidden");
     const [deleteModal, setDeleteModal] = useState("hidden");
 
-        // Fetch products
-        const fetchProducts = async () => {
+    // Fetch products
+
+
+    useEffect(() => {
+
+        async function fetchProducts() {
             setLoading(true);  // Show loading spinner during fetch
-            try {
-                const res = await fetch("/api/getProducts");
-                const data = await res.json();
-    
-                if (data.success) {
-                    setProducts(data.data);
-                } else {
-                    setError("Failed to fetch products");
-                }
-            } catch (err) {
-                setError("An error occurred while fetching products");
-            } finally {
-                setLoading(false);
-            }
+
+            const res = await fetch("/api/getProducts");
+            const data = await res.json();
+            setProducts(data.data);
+            setLoading(false);
+
         };
-    
-        useEffect(() => {
-            fetchProducts();  // Fetch products initially
-        }, [refresh]);  // Re-run when `refresh` state changes
-    
-        if (error) return <p style={{ color: "red" }}>{error}</p>;
-    
-        const handleSubmit = async (e) => {
-            e.preventDefault();
-            setMessage("");
-    
-            try {
-                const res = await fetch("/api/addProduct", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ product, price, category, quantity }),
-                });
-    
-                const data = await res.json();
-                if (data.success) {
-                    setMessage("Product has been added successfully!");
-                    setProduct("");
-                    setPrice("");
-                    setCategory("");
-                    setQuantity(0);
-    
-                    // Trigger refresh to re-fetch products
-                    setRefresh(prev => !prev);  // Toggle the refresh state to re-fetch
-                } else {
-                    setMessage(data.error || "Something went wrong");
-                }
-            } catch (err) {
-                setMessage("Error adding product data to the database");
+
+        fetchProducts()
+
+    }, [refresh]);
+
+
+
+    if (error) return <p style={{ color: "red" }}>{error}</p>;
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setMessage("");
+
+        try {
+            const res = await fetch("/api/addProduct", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ product, price, category, quantity }),
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                setMessage("Product has been added successfully!");
+                setProduct("");
+                setPrice("");
+                setCategory("");
+                setQuantity(0);
+
+                // Trigger refresh to re-fetch products
+                setRefresh(prev => !prev);  // Toggle the refresh state to re-fetch
+            } else {
+                setMessage(data.error || "Something went wrong");
             }
-        };
+        } catch (err) {
+            setMessage("Error adding product data to the database");
+        }
+    };
 
     const toggleProduct = () => {
         setShow(show === "hidden" ? "" : "hidden");
@@ -99,30 +97,30 @@ const Page = () => {
         });
     };
 
- const handleDeleteProduct = async (id) => {
-    try {
-      // Make the DELETE request to the backend
-      const response = await fetch(`/api/deleteProduct/${id}`, {
-        method: 'DELETE', // HTTP DELETE method
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        alert('Product deleted successfully.');
-        // Optionally, update the state/UI to remove the deleted product
-      } else {
-        alert(data.message || 'An error occurred while deleting the product.');
-      }
-    } catch (error) {
-      console.error('Error in delete operation:', error);
-      alert('An error occurred while deleting the product.');
-    }
-  };
-  
+    const handleDeleteProduct = async (id) => {
+        try {
+            // Make the DELETE request to the backend
+            const response = await fetch(`/api/deleteProduct/${id}`, {
+                method: 'DELETE', // HTTP DELETE method
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert('Product deleted successfully.');
+                // Optionally, update the state/UI to remove the deleted product
+            } else {
+                alert(data.message || 'An error occurred while deleting the product.');
+            }
+        } catch (error) {
+            console.error('Error in delete operation:', error);
+            alert('An error occurred while deleting the product.');
+        }
+    };
+
     return (
         <>
             <Sidebar />
@@ -151,7 +149,7 @@ const Page = () => {
                 <div className="   relative shadow-md sm:rounded-lg mt-5">
                     <table className="w-full  text-sm text-left text-black dark:text-gray-400">
 
-                     
+
                         <thead className="text-xs text-white uppercase bg-green-950 md:bg-gray-900 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" className="py-3 px-6">Product</th>
@@ -161,10 +159,10 @@ const Page = () => {
                                 <th scope="col" className="py-3 px-6">Actions</th>
                             </tr>
 
-                          
+
                         </thead>
                         <tbody>
-                            
+
                             {products.map((product) => (
                                 <tr key={product._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                     <td className="py-4 px-6">{product.product}</td>
@@ -173,7 +171,7 @@ const Page = () => {
                                     <td className="py-4 px-6">{product.quantity}</td>
                                     <td className="py-4 px-6">
                                         <button
-                                          onClick={() => handleDeleteProduct(product._id)}
+                                            onClick={() => handleDeleteProduct(product._id)}
                                             className="text-white bg-red-600 p-2 rounded hover:bg-red-800"
                                         >
                                             Delete
@@ -182,15 +180,15 @@ const Page = () => {
                                 </tr>
                             ))}
 
-                            
+
                         </tbody>
                     </table>
                     {loading &&
-            <div className='flex justify-center w-[100%] my-44'>
+                        <div className='flex justify-center w-[100%] my-44'>
 
-                  <img className='' width={70} src="/newanim.gif" alt="" />
+                            <img className='' width={70} src="/newanim.gif" alt="" />
 
-                    
+
                         </div>}
                 </div>
 
