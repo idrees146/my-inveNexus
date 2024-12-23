@@ -1,7 +1,10 @@
 import dbConnect from "../../../lib/dbConnect";
 import Product from "../../../models/Product";
+export const dynamic = 'force-dynamic';
+
 
 export async function GET() {
+
 
   await dbConnect();
 
