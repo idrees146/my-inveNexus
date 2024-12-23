@@ -1,10 +1,13 @@
-import dbConnect from "/lib/dbConnect";
-import Product from "/models/Product";
+import dbConnect from "../../../lib/dbConnect";
+import Product from "../../../models/Product";
 
-export async function GET(req) {
+export async function GET() {
+
+  await dbConnect();
+
   try {
     // Connect to the database
-    await dbConnect();
+    
 
     // Fetch all products
     const products = await Product.find({});
