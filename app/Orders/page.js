@@ -41,6 +41,7 @@ export default function Page() {
     const [orders, setOrders] = useState([])
     const [loading, setLoading] = useState(true)
     const [refreshOrders, setRefreshOrders] = useState(false);  
+    const [message, setMessage] = useState("")
 
 
     useEffect(() => {
