@@ -43,7 +43,7 @@ const Page = () => {
 
         fetchProducts()
 
-    }, []);
+    }, [refresh]);
 
 
 
