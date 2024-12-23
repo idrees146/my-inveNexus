@@ -1,6 +1,8 @@
 import dbConnect from "/lib/dbConnect";
 import Orders from "/models/Orders"
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req) {
 
     try {
